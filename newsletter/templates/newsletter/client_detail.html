@@ -1,0 +1,29 @@
+{% extends 'newsletter/base.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="album py-5 bg-body-tertiary">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img src="{{ i.image.url | media_filter }}">
+                        <div class="card-body">
+                            <p class="card-text"> ФИО: {{object.fullname}}.</p>
+                            <p class="card-text"> email: {{object.email}}.</p>
+                            <p class="card-text"> Комментарий: {{object.comment}}.</p>
+                            {% if object.phone_number %}
+                                <p class="card-text"> Телефон: {{object.phone_number}}.</p>
+                            {% endif %}
+                            <p class="card-text"> Комментарий: {{object.comment}}.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <<a class="btn btn-primary" href="{% url 'newsletters:client_list' %}" role="button">Назад</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
