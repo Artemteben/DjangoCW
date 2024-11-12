@@ -27,14 +27,14 @@ class ClientUpdateView(UpdateView):
     template_name = "newsletter/client_form.html"
 
     def get_success_url(self):
-        return reverse("newsletters:client_detail", args=[self.object.pk])
+        return reverse("newsletter:client_detail", args=[self.object.pk])
 
 
 # Удаление клиента
 class ClientDeleteView(DeleteView):
     model = Client
     template_name = "newsletter/client_confirm_delete.html"
-    success_url = reverse_lazy("newsletters:client_list")
+    success_url = reverse_lazy("newsletter:client_list")
 
 
 # Создание клиента
@@ -42,7 +42,7 @@ class ClientCreateView(CreateView):
     model = Client
     fields = "__all__"
     template_name = "newsletter/client_form.html"
-    success_url = reverse_lazy("newsletters:client_list")
+    success_url = reverse_lazy("newsletter:client_list")
 
 
 # Список рассылок
@@ -63,7 +63,7 @@ class MailingUpdateView(UpdateView):
     template_name = "newsletter/mailing_form.html"
 
     def get_success_url(self):
-        return reverse("newsletters:mailing_detail", args=[self.object.pk])
+        return reverse("newsletter:mailing_detail", args=[self.object.pk])
 
 
 # Создание рассылки
@@ -71,14 +71,14 @@ class MailingCreateView(CreateView):
     model = Mailing
     fields = ["status", "message", "frequency", "clients"]
     template_name = "newsletter/mailing_form.html"
-    success_url = reverse_lazy("newsletters:mailing_list")
+    success_url = reverse_lazy("newsletter:mailing_list")
 
 
 # Удаление рассылки
 class MailingDeleteView(DeleteView):
     model = Mailing
     template_name = "newsletter/mailing_confirm_delete.html"
-    success_url = reverse_lazy("newsletters:mailing_list")
+    success_url = reverse_lazy("newsletter:mailing_list")
 
 
 # Список сообщений
@@ -97,7 +97,7 @@ class MessageUpdateView(UpdateView):
     model = Message
     fields = "__all__"
     template_name = "newsletter/message_form.html"
-    success_url = reverse_lazy("newsletters:message_list")
+    success_url = reverse_lazy("newsletter:message_list")
 
 
 # Создание сообщения
@@ -105,11 +105,11 @@ class MessageCreateView(CreateView):
     model = Message
     fields = "__all__"
     template_name = "newsletter/message_form.html"
-    success_url = reverse_lazy("newsletters:message_list")
+    success_url = reverse_lazy("newsletter:message_list")
 
 
 # Удаление сообщения
 class MessageDeleteView(DeleteView):
     model = Message
     template_name = "newsletter/message_confirm_delete.html"
-    success_url = reverse_lazy("newsletters:message_list")
+    success_url = reverse_lazy("newsletter:message_list")

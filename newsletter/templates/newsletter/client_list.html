@@ -12,9 +12,9 @@
                             <p class="card-text">{{i.email}}.</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a class="btn btn-primary" href="{% url 'newsletters:mailing_detail' i.pk %}" role="button">Посмотреть</a>
-                                    <a class="btn btn-primary" href="{% url 'newsletters:mailing_update' i.pk %}" role="button">Редактировать</a>
-                                    <a class="btn btn-primary" href="{% url 'newsletters:mailing_delete' i.pk %}" role="button">Удалить</a>
+                                    <a class="btn btn-primary" href="{% url 'newsletter:mailing_detail' i.pk %}" role="button">Посмотреть</a>
+                                    <a class="btn btn-primary" href="{% url 'newsletter:mailing_update' i.pk %}" role="button">Редактировать</a>
+                                    <a class="btn btn-primary" href="{% url 'newsletter:mailing_delete' i.pk %}" role="button">Удалить</a>
                                 </div>
                             </div>
                         </div>
