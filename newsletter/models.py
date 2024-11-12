@@ -29,11 +29,17 @@ class Mailing(models.Model):
         STARTED = "started", "Начата"
         FINISHED = "finished", "Завершена"
 
-    clients = models.ManyToManyField(Client, verbose_name="Клиенты")# Обесепечение связи одно сообщенеи много вклиентов с помощью ManyToManyField
-    message = models.ForeignKey("Message", on_delete=models.CASCADE, verbose_name="Сообщение")
+    clients = models.ManyToManyField(
+        Client, verbose_name="Клиенты"
+    )  # Обесепечение связи одно сообщенеи много вклиентов с помощью ManyToManyField
+    message = models.ForeignKey(
+        "Message", on_delete=models.CASCADE, verbose_name="Сообщение"
+    )
     datetime_first_mailing = models.DateTimeField(auto_now_add=True)
     frequency = models.CharField(max_length=10, choices=Frequency.choices)
-    status = models.CharField(max_length=10, choices=Status.choices, default=Status.CREATED)
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.CREATED
+    )
 
     class Meta:
         verbose_name = "Рассылка"
@@ -60,7 +66,17 @@ class MailingAttempt(models.Model):
         SUCCESS = "success", "Успешно"
         FAILED = "failed", "Неуспешно"
 
-    mailing = models.ForeignKey("Mailing", on_delete=models.CASCADE, verbose_name="Рассылка", related_name="attempts")
-    datetime_attempt = models.DateTimeField(default=timezone.now, verbose_name="Дата и время попытки рассылки", )
-    status = models.CharField(max_length=10, choices=Status.choices, default=Status.SUCCESS, **NULLABLE)
+    mailing = models.ForeignKey(
+        "Mailing",
+        on_delete=models.CASCADE,
+        verbose_name="Рассылка",
+        related_name="attempts",
+    )
+    datetime_attempt = models.DateTimeField(
+        default=timezone.now,
+        verbose_name="Дата и время попытки рассылки",
+    )
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.SUCCESS, **NULLABLE
+    )
     server_response = models.TextField(**NULLABLE, verbose_name="Отклик сервера")
