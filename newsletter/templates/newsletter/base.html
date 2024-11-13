@@ -184,18 +184,18 @@
 
 <main>
 
-    <section class="py-5 text-center container">
-        <div class="row py-lg-5">
+    <section class="py-1 text-center container">
+        <div class="row py-lg-1">
             <div class="col-lg-6 col-md-8 mx-auto">
-                <h1 class="fw-light">Каталог</h1>
-                <p class="lead text-body-secondary"> Магазин товаров</p>
+                <h1 class="fw-light">Рассылочная</h1>
+                <p class="lead text-body-secondary"> Сайт для рассылки сообщений</p>
                 <p>
-                    <a class="btn btn-primary" href="{% url 'newsletter:client_create' %}" role="button">Создать
-                        клиента</a>
-                    <a class="btn btn-primary" href="{% url 'newsletter:mailing_create' %}" role="button">
-                        Создать рассылку</a>
-                    <a class="btn btn-primary" href="{% url 'newsletter:message_create' %}" role="button">
-                        Создать сообщение</a>
+                    <a class="btn btn-primary" href="{% url 'newsletter:client_list' %}" role="button">
+                        Клиенты</a>
+                    <a class="btn btn-primary" href="{% url 'newsletter:mailing_list' %}" role="button">
+                        Рассылки</a>
+                    <a class="btn btn-primary" href="{% url 'newsletter:message_list' %}" role="button">
+                        Список сообщений</a>
                 </p>
             </div>
         </div>

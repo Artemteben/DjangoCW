@@ -8,11 +8,11 @@
                     <div class="card shadow-sm">
                         <img src="{{ i.image.url | media_filter }}">
                         <div class="card-body">
-                            <p class="card-text"> Дата создания: {{object.subject}}.</p>
-                            <p class="card-text"> Статус выполнения: {{object.content}}.</p>
+                            <p class="card-text"> Тема сообщения: {{object.subject}}.</p>
+                            <p class="card-text"> Содержание: {{object.content}}.</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <<a class="btn btn-primary" href="{% url 'newsletter:message_list' %}" role="button">Назад</a>
+                                    <a class="btn btn-primary" href="{% url 'newsletter:message_list' %}" role="button">Назад</a>
                                 </div>
                             </div>
                         </div>
