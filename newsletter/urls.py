@@ -16,12 +16,14 @@ from newsletter.views import (
     MessageUpdateView,
     MessageDeleteView,
     MessageCreateView,
+    MailingAttemptListView,
 )
 
 app_name = NewsletterConfig.name
 
 urlpatterns = [
-    path("", ClientListView.as_view(), name="client_list"),
+    path("", MailingAttemptListView.as_view(), name="mailing_attempt_list"),
+    path("client/", ClientListView.as_view(), name="client_list"),
     path("client/<int:pk>/", ClientDetailView.as_view(), name="client_detail"),
     path("client/create/", ClientCreateView.as_view(), name="client_create"),
     path("client/<int:pk>/update/", ClientUpdateView.as_view(), name="client_update"),

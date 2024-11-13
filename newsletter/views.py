@@ -1,4 +1,4 @@
-from newsletter.models import Client, Mailing, Message
+from newsletter.models import Client, Mailing, Message, MailingAttempt
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView,
@@ -113,3 +113,20 @@ class MessageDeleteView(DeleteView):
     model = Message
     template_name = "newsletter/message_confirm_delete.html"
     success_url = reverse_lazy("newsletter:message_list")
+
+
+class MailingAttemptListView(ListView):
+    model = MailingAttempt
+    template_name = "newsletter/mailing_attempt_list.html"
+
+    def get_queryset(self):
+        # Загружаем связанные попытки рассылки для каждого объекта Mailing
+        return Mailing.objects.prefetch_related('attempts').all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_mailings'] = Mailing.objects.count()  # Общее количество рассылок
+        context['active_mailings'] = Mailing.objects.filter(status='started').count()  # Количество активных рассылок
+        return context
+
+

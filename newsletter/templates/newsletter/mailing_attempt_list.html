@@ -1,0 +1,50 @@
+{% extends 'newsletter/base.html' %}
+
+{% block content %}
+  <h2>Список попыток рассылок</h2>
+
+  <div class="mb-3">
+    <p>Общее количество рассылок: <strong>{{ total_mailings }}</strong></p>
+    <p>Количество активных рассылок: <strong>{{ active_mailings }}</strong></p>
+  </div>
+
+  <table class="table table-bordered table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th>Рассылка</th>
+        <th>Дата и время попытки</th>
+        <th>Статус</th>
+        <th>Отклик сервера</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for mailing in object_list %}
+        {% for attempt_item in mailing.attempts.all %}
+          <tr>
+            <td>{{ mailing }}</td>
+            <td>{{ attempt_item.datetime_attempt|date:"d.m.Y H:i" }}</td>
+            <td>
+              {% if attempt_item.status == "success" %}
+                <span class="text-success">{{ attempt_item.get_status_display }}</span>
+              {% else %}
+                <span class="text-danger">{{ attempt_item.get_status_display }}</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if attempt_item.server_response %}
+                {{ attempt_item.server_response }}
+              {% else %}
+                Нет ответа от сервера
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="text-center">Нет попыток рассылки.</td>
+          </tr>
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
