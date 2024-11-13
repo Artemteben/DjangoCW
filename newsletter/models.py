@@ -80,3 +80,10 @@ class MailingAttempt(models.Model):
         max_length=10, choices=Status.choices, default=Status.SUCCESS, **NULLABLE
     )
     server_response = models.TextField(**NULLABLE, verbose_name="Отклик сервера")
+
+    class Meta:
+            verbose_name = "Попытка рассылки"
+            verbose_name_plural = "Попытки рассылки"
+
+    def __str__(self):
+        return f"Attempt on {self.datetime_attempt} - {self.status}"
