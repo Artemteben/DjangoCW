@@ -40,6 +40,9 @@ class Mailing(models.Model):
     status = models.CharField(
         max_length=10, choices=Status.choices, default=Status.CREATED
     )
+    interval = models.PositiveIntegerField(
+        default=60, verbose_name="Интервал между рассылками (минуты)"
+    )
 
     class Meta:
         verbose_name = "Рассылка"
@@ -82,8 +85,8 @@ class MailingAttempt(models.Model):
     server_response = models.TextField(**NULLABLE, verbose_name="Отклик сервера")
 
     class Meta:
-            verbose_name = "Попытка рассылки"
-            verbose_name_plural = "Попытки рассылки"
+        verbose_name = "Попытка рассылки"
+        verbose_name_plural = "Попытки рассылки"
 
     def __str__(self):
         return f"Attempt on {self.datetime_attempt} - {self.status}"

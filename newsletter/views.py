@@ -121,12 +121,12 @@ class MailingAttemptListView(ListView):
 
     def get_queryset(self):
         # Загружаем связанные попытки рассылки для каждого объекта Mailing
-        return Mailing.objects.prefetch_related('attempts').all()
+        return Mailing.objects.prefetch_related("attempts").all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['total_mailings'] = Mailing.objects.count()  # Общее количество рассылок
-        context['active_mailings'] = Mailing.objects.filter(status='started').count()  # Количество активных рассылок
+        context["total_mailings"] = Mailing.objects.count()  # Общее количество рассылок
+        context["active_mailings"] = Mailing.objects.filter(
+            status="started"
+        ).count()  # Количество активных рассылок
         return context
-
-

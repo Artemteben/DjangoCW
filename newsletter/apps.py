@@ -1,7 +1,15 @@
 from django.apps import AppConfig
+import logging
+# from newsletter.tasks import start_scheduler
+from time import sleep
+
+logger = logging.getLogger(__name__)
 
 
 class NewsletterConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "newsletter"
-    verbose_name = "Сервис рассылок"
+
+    # def ready(self):
+    #     sleep(2)  # Задержка для старта
+    #     start_scheduler()  # Функция старта задач

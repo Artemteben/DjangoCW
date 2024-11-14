@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "newsletter",
-    "django_apscheduler"
+    "django_apscheduler",
 ]
 
 MIDDLEWARE = [
@@ -67,7 +67,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "primer",
+        "NAME": "sqlCW",
         "USER": "postgres",
         "PASSWORD": "1991",
         "HOST": "127.0.0.1",
@@ -122,3 +122,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = "/media/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = "a.malakhinsky@gmail.com"
+EMAIL_TO = "a.malakhinsky@gmail.com"
+EMAIL_HOST_PASSWORD = "nnls lsxz dkzm hwtu"
