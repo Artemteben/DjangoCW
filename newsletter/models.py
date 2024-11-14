@@ -36,9 +36,9 @@ class Mailing(models.Model):
         "Message", on_delete=models.CASCADE, verbose_name="Сообщение"
     )
     datetime_first_mailing = models.DateTimeField(auto_now_add=True)
-    frequency = models.CharField(max_length=10, choices=Frequency.choices)
+    frequency = models.CharField(max_length=10, choices=Frequency.choices, verbose_name="Периодичность рассылки")
     status = models.CharField(
-        max_length=10, choices=Status.choices, default=Status.CREATED
+        max_length=10, choices=Status.choices, default=Status.CREATED, verbose_name='Статус выполнения'
     )
     interval = models.PositiveIntegerField(
         default=60, verbose_name="Интервал между рассылками (минуты)"
