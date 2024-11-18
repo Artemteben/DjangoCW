@@ -63,4 +63,3 @@ def check_and_send_mailings():
             mailing.attempts.create(
                 status=MailingAttempt.Status.FAILED, server_response=str(e)
             )
-

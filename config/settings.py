@@ -100,7 +100,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "ru-ru"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
+
 
 USE_I18N = True
 
@@ -130,3 +131,17 @@ EMAIL_USE_SSL = False
 EMAIL_HOST_USER = "a.malakhinsky@gmail.com"
 EMAIL_TO = "a.malakhinsky@gmail.com"
 EMAIL_HOST_PASSWORD = "nnls lsxz dkzm hwtu"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+}

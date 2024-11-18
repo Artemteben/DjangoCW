@@ -20,9 +20,9 @@ class Client(models.Model):
 
 class Mailing(models.Model):
     class Frequency(models.TextChoices):
-        DAILY = "daily", "День"
-        WEEKLY = "weekly", "Неделя"
-        MONTHLY = "monthly", "Месяц"
+        DAY = "day", "День"
+        WEEK = "week", "Неделя"
+        MONTH = "month", "Месяц"
 
     class Status(models.TextChoices):
         CREATED = "created", "Создана"
@@ -36,12 +36,14 @@ class Mailing(models.Model):
         "Message", on_delete=models.CASCADE, verbose_name="Сообщение"
     )
     datetime_first_mailing = models.DateTimeField(auto_now_add=True)
-    frequency = models.CharField(max_length=10, choices=Frequency.choices, verbose_name="Периодичность рассылки")
-    status = models.CharField(
-        max_length=10, choices=Status.choices, default=Status.CREATED, verbose_name='Статус выполнения'
+    frequency = models.CharField(
+        max_length=10, choices=Frequency.choices, verbose_name="Периодичность рассылки"
     )
-    interval = models.PositiveIntegerField(
-        default=60, verbose_name="Интервал между рассылками (минуты)"
+    status = models.CharField(
+        max_length=10,
+        choices=Status.choices,
+        default=Status.CREATED,
+        verbose_name="Статус выполнения",
     )
 
     class Meta:
