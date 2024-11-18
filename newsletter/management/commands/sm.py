@@ -47,7 +47,7 @@ def send_mailing():
     zone = timezone.get_current_timezone()
     current_datetime = datetime.now(zone)
     mailings = Mailing.objects.filter(
-        datetime_first_mailing__lte=current_datetime, status=Mailing.Status.STARTED
+        datetime_first_mailing__lte=current_datetime, status=Mailing.Status.CREATED
     )
     for mailing in mailings:
         logger.info("цикл send_mailing запущена.")
@@ -64,6 +64,7 @@ def send_mailing():
                 recipient_list=[client.email for client in mailing.clients.all()],
             )
             logger.info(f"Рассылка {mailing} отправлена успешно.")
+            Mailing.Status = "started"
             MailingAttempt.objects.create(
                     mailing=mailing,
                     datetime_attempt=timezone.now(),
@@ -107,11 +108,11 @@ class Command(BaseCommand):
         scheduler.add_job(
             send_mailing,
             trigger=CronTrigger(second="10"),  # Every 10 seconds
-            id="send_mailing",  # The `id` assigned to each job MUST be unique
+            id="Mailing",  # The `id` assigned to each job MUST be unique
             max_instances=1,
             replace_existing=True,
         )
-        logger.info("Added job 'my_job'.")
+        logger.info("Добавлена задача 'send_mailing'.")
 
         scheduler.add_job(
             delete_old_job_executions,

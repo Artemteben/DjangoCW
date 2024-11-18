@@ -9,10 +9,10 @@
                         <img src="{{ i.image.url | media_filter }}">
                         <div class="card-body">
                             <p class="card-text"> Дата создания: {{object.datetime_first_mailing}}.</p>
-                            <p class="card-text"> Статус выполнения: {{object.status}}.</p>
-                            <p class="card-text"> Частота отправки: {{object.frequency}}.</p>
-                            <p class="card-text"> Тема сообщения: {{object.message}}.</p>
-                            <p class="card-text"> Клиент: {{object.clients}}.</p>
+                            <p class="card-text">Статус рассылки: {{object.get_status_display}}</p>
+                            <p class="card-text">Статус рассылки: {{object.get_frequency_display }}</p>
+                            <p class="card-text"> Тема сообщения: {{object.subject}}.</p>
+                            <p class="card-text"> Содержание сообщения: {{object.message}}.</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
                                     <a class="btn btn-primary" href="{% url 'newsletter:mailing_list' %}" role="button">Назад</a>

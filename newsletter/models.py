@@ -20,9 +20,9 @@ class Client(models.Model):
 
 class Mailing(models.Model):
     class Frequency(models.TextChoices):
-        DAY = "day", "День"
-        WEEK = "week", "Неделя"
-        MONTH = "month", "Месяц"
+        DAY = "day", "ежедневно"
+        WEEK = "week", "еженедельно"
+        MONTH = "month", "ежемесячно"
 
     class Status(models.TextChoices):
         CREATED = "created", "Создана"
@@ -51,7 +51,7 @@ class Mailing(models.Model):
         verbose_name_plural = "Рассылки"
 
     def __str__(self):
-        return f"Рассылка от {self.datetime_first_mailing} для {self.clients.all().count()} клиентов"
+        return f"Рассылка {self.frequency} для {self.clients.all().count()} клиентов"
 
 
 class Message(models.Model):
