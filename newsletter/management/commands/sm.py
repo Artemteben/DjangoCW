@@ -21,24 +21,6 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 
-# Функция старта периодических задач
-
-#
-# def send_mailing():
-#     zone = pytz.timezone(settings.TIME_ZONE)
-#     current_datetime = datetime.now(zone)
-#     # создание объекта с применением фильтра
-#     mailings = Mailing.objects.filter(datetime_first_mailing__lte=current_datetime).filter(
-#         status=[Mailing.Status.STARTED]
-#     )
-#
-#     for mailing in mailings:
-#         send_mail(
-#             subject=mailing.subject,
-#             message=mailing.message,
-#             from_email=settings.EMAIL_HOST_USER,
-#             recipient_list=[client.email for client in mailing.clients.all()],
-#         )
 
 
 def send_mailing():
@@ -107,7 +89,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             send_mailing,
-            trigger=CronTrigger(second="10"),  # Every 10 seconds
+            trigger=self.get_cron_trigger(send_mailing),  # Every 10 seconds
             id="Mailing",  # The `id` assigned to each job MUST be unique
             max_instances=1,
             replace_existing=True,
@@ -131,3 +113,15 @@ class Command(BaseCommand):
             logger.info("Stopping scheduler...")
             scheduler.shutdown()
             logger.info("Scheduler shut down successfully!")
+
+    def get_cron_trigger(self, mailing):
+        """
+        Устанавливает интервал выполнения для конкретной рассылки на основе ее частоты.
+        """
+        current_datetime = timezone.now()
+        if mailing.frequency == Mailing.Frequency.DAY:
+            return CronTrigger(day="1", hour=current_datetime.hour + 1, minute=current_datetime.minute + 1)
+        elif mailing.frequency == Mailing.Frequency.WEEK:
+            return CronTrigger(week="1", hour=current_datetime.hour, minute=current_datetime.minute)  # каждое воскресенье
+        elif mailing.frequency == Mailing.Frequency.MONTH:
+            return CronTrigger(month="1", hour=current_datetime.hour, minute=current_datetime.minute)  # первое число каждого месяца
