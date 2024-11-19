@@ -25,9 +25,10 @@ class Mailing(models.Model):
         MONTH = "month", "ежемесячно"
 
     class Status(models.TextChoices):
-        CREATED = "created", "Создана"
-        STARTED = "started", "Начата"
-        FINISHED = "finished", "Завершена"
+        CREATED = "CREATED", "Создана"
+        STARTED = "STARTED", "Начата"
+        FINISHED = "FINISHED", "Завершена"
+
 
     clients = models.ManyToManyField(
         Client, verbose_name="Клиенты"
