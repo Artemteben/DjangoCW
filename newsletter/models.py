@@ -36,7 +36,10 @@ class Mailing(models.Model):
         "Message", on_delete=models.CASCADE, verbose_name="Сообщение"
     )
     datetime_first_mailing = models.DateTimeField(
-        default=timezone.now, verbose_name="Дата рассылки"
+        default=timezone.now, verbose_name="Дата начала рассылки"
+    )
+    date_time_last_mailing = models.DateTimeField(default=timezone.now,
+        null=True, blank=True, verbose_name="Последний день рассылки"
     )
     frequency = models.CharField(
         max_length=10, choices=Frequency.choices, verbose_name="Периодичность рассылки"
@@ -57,8 +60,8 @@ class Mailing(models.Model):
 
 
 class Message(models.Model):
-    subject = models.CharField(max_length=255, verbose_name="Тема")
-    content = models.TextField(verbose_name="Содержание")
+    subject = models.CharField(max_length=255, verbose_name="Тема сообщения")
+    content = models.TextField(verbose_name="Содержание сообщения")
 
     class Meta:
         verbose_name = "Сообщение"

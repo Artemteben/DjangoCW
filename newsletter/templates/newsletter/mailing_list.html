@@ -16,7 +16,8 @@
                     <div class="card shadow-sm">
 <!--                        <img src="{{ i.image.url | media_filter }}">-->
                         <div class="card-body">
-                            <p class="card-text">Дата создания {{i.datetime_first_mailing}}.</p>
+                            <p class="card-text">Дата начала рассылки: {{i.datetime_first_mailing}}.</p>
+                            <p class="card-text">Последний день рассылки: {{i.date_time_last_mailing}}.</p>
                             <p class="card-text">Статус рассылки: {{i.get_status_display}}</p>
                             <p class="card-text">Статус рассылки: {{i.get_frequency_display }}</p>
                             <div class="d-flex justify-content-between align-items-center">
