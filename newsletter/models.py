@@ -35,7 +35,9 @@ class Mailing(models.Model):
     message = models.ForeignKey(
         "Message", on_delete=models.CASCADE, verbose_name="Сообщение"
     )
-    datetime_first_mailing = models.DateTimeField(auto_now_add=True)
+    datetime_first_mailing = models.DateTimeField(
+        default=timezone.now, verbose_name="Дата рассылки"
+    )
     frequency = models.CharField(
         max_length=10, choices=Frequency.choices, verbose_name="Периодичность рассылки"
     )

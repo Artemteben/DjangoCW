@@ -43,10 +43,11 @@
             <tr>
               <td>{{ mailing }}</td>
               <td>{{ attempt_item.datetime_attempt|date:"d.m.Y H:i" }}</td>
-              <td{% if attempt_item.status == "success" %}
+              <td>{% if attempt_item.status == "success" %}
                   <span class="text-success">{{ attempt_item.get_status_display }}</span>
-                {% else %}
+                 {% else %}
                   <span class="text-danger">{{ attempt_item.get_status_display }}</span>
+
                 {% endif %}
               </td>
               <td>

@@ -39,61 +39,79 @@ class SendMail:
         logger.info("Инициализация класса SendMail")
 
     def get_mailings(self):
-        # Получить актуальные рассылки
         zone = timezone.get_current_timezone()
         current_datetime = datetime.now(zone)
-        return Mailing.objects.filter(
-            datetime_first_mailing__lte=current_datetime,
+        mailings = Mailing.objects.filter(
             status=Mailing.Status.CREATED,
         )
+        for mailing in mailings:
+            mailing.status = Mailing.Status.STARTED
+            mailing.save()
+            logger.info(f"Статус рассылки {mailing.id} изменен на 'STARTED'")
+        return mailings
 
     def send_mailing(self):
         mailings = self.get_mailings()
-
         for mailing in mailings:
+            success_count, fail_count = 0, 0
             try:
                 subject = mailing.message.subject
                 content = mailing.message.content
-                recipients = [client.email for client in mailing.clients.all()]
+                recipients = mailing.clients.values_list("email", flat=True)
+                logger.info(
+                    f"[Рассылка ID {mailing.id}] Отправка клиентам: {list(recipients)}"
+                )
 
-                logger.info(f"Отправка рассылки {mailing.id} клиентам: {recipients}")
                 send_mail(
                     subject=subject,
                     message=content,
                     from_email=settings.EMAIL_HOST_USER,
-                    recipient_list=recipients,
+                    recipient_list=list(recipients),
                 )
 
-                mailing.status = Mailing.Status.STARTED
-                mailing.save()
-
+                success_count += len(recipients)
                 MailingAttempt.objects.create(
                     mailing=mailing,
                     datetime_attempt=timezone.now(),
                     status=MailingAttempt.Status.SUCCESS,
                     server_response="Сообщение отправлено успешно",
                 )
-                logger.info(f"Рассылка {mailing.id} отправлена успешно.")
             except Exception as e:
-                logger.error(f"Ошибка отправки рассылки {mailing.id}: {e}")
+                fail_count += 1
+                logger.error(f"[Рассылка ID {mailing.id}] Ошибка: {e}")
                 MailingAttempt.objects.create(
                     mailing=mailing,
                     datetime_attempt=timezone.now(),
                     status=MailingAttempt.Status.FAILED,
                     server_response=str(e),
                 )
+            logger.info(
+                f"[Рассылка ID {mailing.id}] Успешно отправлено: {success_count}, Ошибки: {fail_count}"
+            )
 
     def get_cron_trigger(self, mailing):
-        # Создать крон-триггер для конкретной рассылки
         if mailing.frequency == Mailing.Frequency.DAY:
-            return CronTrigger(day=1)
+            # return CronTrigger(hour=0, minute=0)
+            return CronTrigger(minute="1")
         elif mailing.frequency == Mailing.Frequency.WEEK:
-            return CronTrigger(week=1)
+            return CronTrigger(day_of_week="mon", hour=0, minute=0)
         elif mailing.frequency == Mailing.Frequency.MONTH:
-            return CronTrigger(month=1)
+            return CronTrigger(day=1, hour=0, minute=0)
         else:
-            logger.error(f"Неизвестная частота рассылки: {mailing.frequency}")
-            return None
+            logger.error(
+                f"[Рассылка ID {mailing.id}] Неизвестная частота: {mailing.frequency}"
+            )
+            return CronTrigger(minute=1)
+
+    # datetime_first_mailing__lte = current_datetime
+
+    def finished_status(self):
+        mailings = self.get_mailings()
+        for mailing in mailings:
+            if mailing.status == Mailing.Status.STARTED:
+                mailing.status = Mailing.Status.FINISHED
+                mailing.save()
+                logger.info(f"Статус рассылки {mailing.id} изменен на 'FINISHED'")
 
 
 class Command(BaseCommand):
@@ -118,19 +136,21 @@ class Command(BaseCommand):
                 )
                 logger.info(f"Добавлена задача для рассылки {mailing.id}.")
 
-        scheduler.add_job(
-            delete_old_job_executions,
-            trigger=CronTrigger(day_of_week="mon", hour="00", minute="00"),
-            id="delete_old_job_executions",
-            max_instances=1,
-            replace_existing=True,
-        )
-        logger.info("Добавлена задача 'delete_old_job_executions'.")
+        # scheduler.add_job(
+        #     delete_old_job_executions,
+        #     trigger=CronTrigger(day_of_week="mon", hour="00", minute="00"),
+        #     id="delete_old_job_executions",
+        #     max_instances=1,
+        #     replace_existing=True,
+        # )
+        # logger.info("Добавлена задача 'delete_old_job_executions'.")
 
         try:
             logger.info("Запуск планировщика...")
             scheduler.start()
         except KeyboardInterrupt:
+            logger.info("finished_status")
+            send_mail_service.finished_status()
             logger.info("Остановка планировщика...")
             scheduler.shutdown()
             logger.info("Планировщик успешно остановлен!")

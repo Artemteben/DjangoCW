@@ -59,7 +59,7 @@ class MailingDetailView(DetailView):
 # Редактирование рассылки
 class MailingUpdateView(UpdateView):
     model = Mailing
-    fields = "__all__"
+    fields = ["datetime_first_mailing", "message", "frequency", "clients"]
     template_name = "newsletter/mailing_form.html"
 
     def get_success_url(self):
@@ -69,7 +69,7 @@ class MailingUpdateView(UpdateView):
 # Создание рассылки
 class MailingCreateView(CreateView):
     model = Mailing
-    fields = ["status", "message", "frequency", "clients"]
+    fields = ["datetime_first_mailing", "message", "frequency", "clients"]
     template_name = "newsletter/mailing_form.html"
     success_url = reverse_lazy("newsletter:mailing_list")
 
@@ -79,6 +79,16 @@ class MailingDeleteView(DeleteView):
     model = Mailing
     template_name = "newsletter/mailing_confirm_delete.html"
     success_url = reverse_lazy("newsletter:mailing_list")
+
+    def get_context_data(self, **kwargs):
+        """
+        Переопределяем функцию для отображения
+        клиентов этой рассылки.
+        """
+        context = super().get_context_data(**kwargs)
+        clients = list(self.object.clients.all())
+        context["clients"] = ", ".join([str(client) for client in clients])
+        return context
 
 
 # Список сообщений

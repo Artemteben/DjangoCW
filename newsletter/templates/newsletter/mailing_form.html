@@ -1,21 +1,37 @@
 {% extends 'newsletter/base.html' %}
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-6">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-12">
             <form class="row" method="post" enctype="multipart/form-data">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header">
+                        <h5>
+                            {% if object %}
+                            Редактирование записи
+                            {% else %}
+                            Создание новой записи
+                            {% endif %}
+                        </h5>
+                    </div>
+                    <div class="card-body py-4">
                         {% csrf_token %}
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif %}
                         {{ form.as_p }}
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        {% if object %}
-                        Сохранить
-                        {% else %}
-                        Создать
-                        {% endif %}
-                    </button>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            {% if object %}
+                            <i class="fas fa-save"></i> Сохранить
+                            {% else %}
+                            <i class="fas fa-plus"></i> Создать
+                            {% endif %}
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

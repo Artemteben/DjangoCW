@@ -21,8 +21,6 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 
-
-
 def send_mailing():
     logger.info("Запуск функции send_mailing")
     logger.info("Функция send_mailing запущена.")
@@ -48,20 +46,19 @@ def send_mailing():
             logger.info(f"Рассылка {mailing} отправлена успешно.")
             Mailing.Status = "started"
             MailingAttempt.objects.create(
-                    mailing=mailing,
-                    datetime_attempt=timezone.now(),
-                    status=MailingAttempt.Status.SUCCESS,
-                    server_response="Сообщение отправлено успешно"
-                )
+                mailing=mailing,
+                datetime_attempt=timezone.now(),
+                status=MailingAttempt.Status.SUCCESS,
+                server_response="Сообщение отправлено успешно",
+            )
         except Exception as e:
             logger.error(f"Ошибка отправки рассылки {mailing}: {e}")
             MailingAttempt.objects.create(
-                    mailing=mailing,
-                    datetime_attempt=timezone.now(),
-                    status=MailingAttempt.Status.FAILED,
-                    server_response="Ошибка")
-
-
+                mailing=mailing,
+                datetime_attempt=timezone.now(),
+                status=MailingAttempt.Status.FAILED,
+                server_response="Ошибка",
+            )
 
 
 # The `close_old_connections` decorator ensures that database connections, that have become
@@ -120,8 +117,16 @@ class Command(BaseCommand):
         """
         current_datetime = timezone.now()
         if mailing.frequency == Mailing.Frequency.DAY:
-            return CronTrigger(day="1", hour=current_datetime.hour + 1, minute=current_datetime.minute + 1)
+            return CronTrigger(
+                day="1",
+                hour=current_datetime.hour + 1,
+                minute=current_datetime.minute + 1,
+            )
         elif mailing.frequency == Mailing.Frequency.WEEK:
-            return CronTrigger(week="1", hour=current_datetime.hour, minute=current_datetime.minute)  # каждое воскресенье
+            return CronTrigger(
+                week="1", hour=current_datetime.hour, minute=current_datetime.minute
+            )  # каждое воскресенье
         elif mailing.frequency == Mailing.Frequency.MONTH:
-            return CronTrigger(month="1", hour=current_datetime.hour, minute=current_datetime.minute)  # первое число каждого месяца
+            return CronTrigger(
+                month="1", hour=current_datetime.hour, minute=current_datetime.minute
+            )  # первое число каждого месяца
