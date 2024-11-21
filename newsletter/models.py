@@ -8,7 +8,7 @@ class Client(models.Model):
     email = models.EmailField(unique=True, verbose_name="email")
     fullname = models.CharField(max_length=250, verbose_name="ФИО")
     phone_number = models.CharField(max_length=15, unique=True, **NULLABLE)
-    comment = models.TextField(verbose_name="Комментарий")
+    comment = models.TextField(verbose_name="Комментарий", **NULLABLE)
 
     class Meta:
         verbose_name = "Клиент"
@@ -29,7 +29,6 @@ class Mailing(models.Model):
         STARTED = "STARTED", "Начата"
         FINISHED = "FINISHED", "Завершена"
 
-
     clients = models.ManyToManyField(
         Client, verbose_name="Клиенты"
     )  # Обесепечение связи одно сообщенеи много вклиентов с помощью ManyToManyField
@@ -39,8 +38,11 @@ class Mailing(models.Model):
     datetime_first_mailing = models.DateTimeField(
         default=timezone.now, verbose_name="Дата начала рассылки"
     )
-    date_time_last_mailing = models.DateTimeField(default=timezone.now,
-        null=True, blank=True, verbose_name="Последний день рассылки"
+    date_time_last_mailing = models.DateTimeField(
+        default=timezone.now,
+        null=True,
+        blank=True,
+        verbose_name="Последний день рассылки",
     )
     frequency = models.CharField(
         max_length=10, choices=Frequency.choices, verbose_name="Периодичность рассылки"

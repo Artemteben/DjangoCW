@@ -43,7 +43,10 @@ def update_mailing_status():
             mailing.status = Mailing.Status.STARTED
             mailing.save()
             logger.info(f"Статус рассылки {mailing.id} изменен на 'STARTED'")
-        elif mailing.status == Mailing.Status.STARTED and mailing.date_time_last_mailing < timezone.now():
+        elif (
+            mailing.status == Mailing.Status.STARTED
+            and mailing.date_time_last_mailing < timezone.now()
+        ):
             mailing.status = Mailing.Status.FINISHED
             mailing.save()
             logger.info(f"Статус рассылки {mailing.id} изменен на 'FINISHED'")
@@ -58,7 +61,9 @@ def get_cron_trigger(mailing):
     elif mailing.frequency == Mailing.Frequency.MONTH:
         return CronTrigger(day=1, hour=0, minute=0)
     else:
-        logger.error(f"[Рассылка ID {mailing.id}] Неизвестная частота: {mailing.frequency}")
+        logger.error(
+            f"[Рассылка ID {mailing.id}] Неизвестная частота: {mailing.frequency}"
+        )
         return None
 
 
@@ -84,7 +89,9 @@ def send_mailing():
                 )
             except Exception as e:
                 fail_count += 1
-                logger.error(f"[Рассылка ID {mailing.id}] Ошибка для клиента {client.email}: {e}")
+                logger.error(
+                    f"[Рассылка ID {mailing.id}] Ошибка для клиента {client.email}: {e}"
+                )
                 MailingAttempt.objects.create(
                     mailing=mailing,
                     datetime_attempt=timezone.now(),

@@ -5,7 +5,8 @@ from config import settings
 from newsletter.models import Mailing
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore
-from newsletter.management.commands.start_scheduler import schedule_future_mailing
+from newsletter.tasks import schedule_future_mailing
+
 
 @receiver(post_save, sender=Mailing)
 def schedule_mailing_on_save(sender, instance, created, **kwargs):

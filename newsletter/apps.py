@@ -1,9 +1,11 @@
 import logging
 import threading
-from time import sleep
 from django.apps import AppConfig
+from django.db.models.signals import post_migrate
+from time import sleep
 
 logger = logging.getLogger(__name__)
+
 
 class NewsletterConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
@@ -13,19 +15,26 @@ class NewsletterConfig(AppConfig):
         """
         Запускает планировщик рассылок при старте приложения.
         """
-        from newsletter.management.commands.run_scheduler import Command
-        # from newsletter.management.commands.start_scheduler import Command
+        logger.debug("NewsletterConfig.ready() начался")
 
         def start_scheduler():
-            """
-            Обертка для запуска команды планировщика в отдельном потоке.
-            """
             try:
-                sleep(2)  # Задержка для предотвращения конфликта с миграциями
+                from newsletter.management.commands.start_scheduler import Command
+
+                # Добавляем проверку готовности миграций
                 logger.info("Запуск APScheduler из apps.py.")
                 Command().handle()
+            except ImportError as e:
+                logger.error(f"Ошибка импорта модуля start_scheduler: {e}")
             except Exception as e:
                 logger.error(f"Ошибка при запуске планировщика: {e}")
-    #
-    #     # Запуск планировщика в отдельном потоке
-    #     threading.Thread(target=start_scheduler, daemon=True).start()
+
+        def run_scheduler_with_delay():
+            sleep(2)  # Задержка для предотвращения конфликта с миграциями
+            start_scheduler()
+
+        # Подключаем сигнал post_migrate для запуска планировщика после завершения миграций
+        post_migrate.connect(
+            lambda sender, **kwargs: threading.Thread(target=run_scheduler_with_delay, daemon=True).start(),
+            sender=self,
+        )

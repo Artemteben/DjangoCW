@@ -59,7 +59,13 @@ class MailingDetailView(DetailView):
 # Редактирование рассылки
 class MailingUpdateView(UpdateView):
     model = Mailing
-    fields = ["datetime_first_mailing", 'date_time_last_mailing', "message", "frequency", "clients"]
+    fields = [
+        "datetime_first_mailing",
+        "date_time_last_mailing",
+        "message",
+        "frequency",
+        "clients",
+    ]
     template_name = "newsletter/mailing_form.html"
 
     def get_success_url(self):
@@ -69,7 +75,13 @@ class MailingUpdateView(UpdateView):
 # Создание рассылки
 class MailingCreateView(CreateView):
     model = Mailing
-    fields = ["datetime_first_mailing", 'date_time_last_mailing', "message", "frequency", "clients"]
+    fields = [
+        "datetime_first_mailing",
+        "date_time_last_mailing",
+        "message",
+        "frequency",
+        "clients",
+    ]
     template_name = "newsletter/mailing_form.html"
     success_url = reverse_lazy("newsletter:mailing_list")
 
@@ -136,7 +148,10 @@ class MailingAttemptListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["total_mailings"] = Mailing.objects.count()  # Общее количество рассылок
+        # context["active_mailings"] = Mailing.objects.filter(
+        #     status="started"
+        # ).count()  # Количество активных рассылок
         context["active_mailings"] = Mailing.objects.filter(
-            status="started"
-        ).count()  # Количество активных рассылок
+            status=Mailing.Status.STARTED
+        ).count()
         return context
