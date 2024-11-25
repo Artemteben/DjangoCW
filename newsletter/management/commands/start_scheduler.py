@@ -25,6 +25,7 @@ class Command(BaseCommand):
     help = "Запуск планировщика рассылок APScheduler."
 
     def handle(self, *args, **options):
+        logger.info(f"Запуск планировщика{scheduler_started()}")
         scheduler_started()
         # scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
         # scheduler.add_jobstore(DjangoJobStore(), "default")

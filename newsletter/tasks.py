@@ -1,28 +1,17 @@
 import logging
 from datetime import timedelta
-from apscheduler.triggers.cron import CronTrigger
-from django.conf import settings
-from django.core.mail import send_mail
-from django.utils import timezone
-from django_apscheduler.models import DjangoJobExecution
-from newsletter.models import Mailing, MailingAttempt
-import logging
-from datetime import timedelta
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django.conf import settings
 from django.core.mail import send_mail
-from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 
 from newsletter.models import Mailing, MailingAttempt
-from newsletter.tasks import delete_old_job_executions, schedule_future_mailing
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
@@ -34,6 +23,7 @@ def delete_old_job_executions(max_age=604_800):
     """
     threshold = timezone.now() - timedelta(seconds=max_age)
     try:
+        logger.info(f" Удаление старых записей")
         DjangoJobExecution.objects.filter(run_time__lte=threshold).delete()
     except Exception as e:
         logger.error(f"Ошибка при удалении старых записей задач: {e}")
@@ -44,7 +34,8 @@ def get_cron_trigger(mailing):
     Создание CronTrigger на основе частоты рассылки.
     """
     if mailing.frequency == Mailing.Frequency.DAY:
-        return CronTrigger(hour=0, minute=0)  # Ежедневно в полночь
+        # return CronTrigger(hour=0, minute=0)  # Ежедневно в полночь
+        return CronTrigger(minute='1')
     elif mailing.frequency == Mailing.Frequency.WEEK:
         return CronTrigger(day_of_week="mon", hour=0, minute=0)  # Еженедельно
     elif mailing.frequency == Mailing.Frequency.MONTH:
@@ -53,7 +44,7 @@ def get_cron_trigger(mailing):
         logger.error(
             f"[Рассылка ID {mailing.id}] Неизвестная частота: {mailing.frequency}"
         )
-        raise ValueError(f"Неизвестная частота рассылки: {mailing.frequency}")
+        return f"Неизвестная частота рассылки: {mailing.frequency}"
 
 
 def schedule_future_mailing(scheduler, mailing):
@@ -69,7 +60,7 @@ def schedule_future_mailing(scheduler, mailing):
         return
 
     # Если время последней рассылки уже истекло, не планируем
-    if mailing.datetime_last_mailing and mailing.datetime_last_mailing <= now:
+    if mailing.date_time_last_mailing and mailing.date_time_last_mailing <= now:
         logger.info(
             f"Рассылка ID {mailing.id} пропущена, так как дата завершения уже истекла."
         )
@@ -81,19 +72,26 @@ def schedule_future_mailing(scheduler, mailing):
         Mailing.Frequency.WEEK,
         Mailing.Frequency.MONTH,
     ]:
+        logger.info(
+            f"Регулярные рассылки"
+        )
         trigger = get_cron_trigger(mailing)
         if trigger:
+            logger.info(
+                f"Начало регулярных рассылок"
+            )
             scheduler.add_job(
                 send_mailing,
                 trigger=trigger,
                 id=f"send_mailing_{mailing.id}_frequency",
                 args=[mailing.id],
                 replace_existing=True,
-                end_date=mailing.datetime_last_mailing,  # Завершаем после этой даты
+                end_date=mailing.date_time_last_mailing,
+                # Завершаем после этой даты
             )
             logger.info(
                 f"Регулярная рассылка ID {mailing.id} запланирована "
-                f"с частотой {mailing.frequency}, завершение {mailing.datetime_last_mailing}."
+                f"с частотой {mailing.frequency}, завершение {mailing.date_time_last_mailing}."
             )
 
     # Разовая задача
@@ -105,6 +103,9 @@ def schedule_future_mailing(scheduler, mailing):
             hour=mailing.datetime_first_mailing.hour,
             minute=mailing.datetime_first_mailing.minute,
             second=0,
+        )
+        logger.info(
+            f"Начало разовой рассылки"
         )
         scheduler.add_job(
             send_mailing,
@@ -127,7 +128,7 @@ def send_mailing(mailing_id):
         now = timezone.now()
 
         # Проверка на истечение даты завершения
-        if mailing.datetime_last_mailing and now > mailing.datetime_last_mailing:
+        if mailing.date_time_last_mailing and now > mailing.date_time_last_mailing:
             logger.info(
                 f"Рассылка ID {mailing.id} остановлена, так как дата завершения истекла."
             )
@@ -142,6 +143,7 @@ def send_mailing(mailing_id):
 
         # Обновляем статус рассылки
         if mailing.status != Mailing.Status.STARTED:
+            logger.info(f"Обновляем статус рассылки STARTED")
             mailing.status = Mailing.Status.STARTED
             mailing.save()
 
@@ -178,6 +180,7 @@ def send_mailing(mailing_id):
 
         # Проверяем, все ли клиенты обработаны
         if success_count + fail_count == mailing.clients.count():
+            logger.info(f"Обновляем статус рассылки FINISHED")
             mailing.status = Mailing.Status.FINISHED
             mailing.save()
 
@@ -191,7 +194,6 @@ def send_mailing(mailing_id):
 
 
 def scheduler_started():
-
     scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
     scheduler.add_jobstore(DjangoJobStore(), "default")
 
@@ -203,12 +205,12 @@ def scheduler_started():
         schedule_future_mailing(scheduler, mailing)
 
     # Задача для удаления старых записей
-    scheduler.add_job(
-        delete_old_job_executions,
-        trigger=CronTrigger(day_of_week="mon", hour=0, minute=0),
-        id="delete_old_job_executions",
-        replace_existing=True,
-    )
+    # scheduler.add_job(
+    #     delete_old_job_executions,
+    #     trigger=CronTrigger(day_of_week="mon", hour=0, minute=0),
+    #     id="delete_old_job_executions",
+    #     replace_existing=True,
+    # )
 
     logger.info("Запуск планировщика...")
     try:

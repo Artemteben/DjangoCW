@@ -45,8 +45,9 @@ class Mailing(models.Model):
         verbose_name="Последний день рассылки",
     )
     frequency = models.CharField(
-        max_length=10, choices=Frequency.choices, verbose_name="Периодичность рассылки"
-    )
+        max_length=10, choices=Frequency.choices,
+        verbose_name="Периодичность рассылки",
+        **NULLABLE)
     status = models.CharField(
         max_length=10,
         choices=Status.choices,
