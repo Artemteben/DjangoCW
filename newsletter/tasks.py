@@ -1,6 +1,6 @@
 import logging
 from datetime import timedelta
-
+from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django.conf import settings
@@ -35,7 +35,7 @@ def get_cron_trigger(mailing):
     """
     if mailing.frequency == Mailing.Frequency.DAY:
         # return CronTrigger(hour=0, minute=0)  # Ежедневно в полночь
-        return CronTrigger(minute='1')
+        return CronTrigger(minute="1")
     elif mailing.frequency == Mailing.Frequency.WEEK:
         return CronTrigger(day_of_week="mon", hour=0, minute=0)  # Еженедельно
     elif mailing.frequency == Mailing.Frequency.MONTH:
@@ -72,14 +72,10 @@ def schedule_future_mailing(scheduler, mailing):
         Mailing.Frequency.WEEK,
         Mailing.Frequency.MONTH,
     ]:
-        logger.info(
-            f"Регулярные рассылки"
-        )
+        logger.info(f"Регулярные рассылки")
         trigger = get_cron_trigger(mailing)
         if trigger:
-            logger.info(
-                f"Начало регулярных рассылок"
-            )
+            logger.info(f"Начало регулярных рассылок")
             scheduler.add_job(
                 send_mailing,
                 trigger=trigger,
@@ -104,9 +100,7 @@ def schedule_future_mailing(scheduler, mailing):
             minute=mailing.datetime_first_mailing.minute,
             second=0,
         )
-        logger.info(
-            f"Начало разовой рассылки"
-        )
+        logger.info(f"Начало разовой рассылки")
         scheduler.add_job(
             send_mailing,
             trigger=trigger,
@@ -193,29 +187,49 @@ def send_mailing(mailing_id):
         logger.error(f"Рассылка ID {mailing_id} не найдена.")
 
 
+# def scheduler_started():
+#     scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
+#     scheduler.add_jobstore(DjangoJobStore(), "default")
+#
+#     # Планирование будущих рассылок
+#     for mailing in Mailing.objects.filter(
+#         datetime_first_mailing__gt=timezone.now(),
+#         status=Mailing.Status.CREATED,
+#     ):
+#         schedule_future_mailing(scheduler, mailing)
+#
+#     # Задача для удаления старых записей
+#     # scheduler.add_job(
+#     #     delete_old_job_executions,
+#     #     trigger=CronTrigger(day_of_week="mon", hour=0, minute=0),
+#     #     id="delete_old_job_executions",
+#     #     replace_existing=True,
+#     # )
+#
+#     logger.info("Запуск планировщика...")
+#     try:
+#         scheduler.start()
+#     except KeyboardInterrupt:
+#         logger.info("Остановка планировщика...")
+#         scheduler.shutdown()
+#         logger.info("Планировщик успешно остановлен!")
+
 def scheduler_started():
-    scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
+    scheduler = BackgroundScheduler(timezone=settings.TIME_ZONE)
     scheduler.add_jobstore(DjangoJobStore(), "default")
 
-    # Планирование будущих рассылок
     for mailing in Mailing.objects.filter(
         datetime_first_mailing__gt=timezone.now(),
         status=Mailing.Status.CREATED,
     ):
         schedule_future_mailing(scheduler, mailing)
 
-    # Задача для удаления старых записей
-    # scheduler.add_job(
-    #     delete_old_job_executions,
-    #     trigger=CronTrigger(day_of_week="mon", hour=0, minute=0),
-    #     id="delete_old_job_executions",
-    #     replace_existing=True,
-    # )
+    scheduler.add_job(
+        delete_old_job_executions,
+        trigger=CronTrigger(day_of_week="mon", hour=0, minute=0),
+        id="delete_old_job_executions",
+        replace_existing=True,
+    )
 
     logger.info("Запуск планировщика...")
-    try:
-        scheduler.start()
-    except KeyboardInterrupt:
-        logger.info("Остановка планировщика...")
-        scheduler.shutdown()
-        logger.info("Планировщик успешно остановлен!")
+    scheduler.start()

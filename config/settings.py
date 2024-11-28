@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     "django_apscheduler",
     "users",
     "blog",
-
 ]
 
 MIDDLEWARE = [
@@ -63,7 +62,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -109,8 +108,8 @@ TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 
 USE_TZ = True
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/

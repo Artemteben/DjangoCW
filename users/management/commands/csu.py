@@ -9,12 +9,12 @@ class Command(BaseCommand):
         Функция для создания суперпользователя.
         """
         user = User.objects.create(
-            email='admin@admin.com',
-            first_name='',
-            last_name='',
+            email="admin@admin.com",
+            first_name="",
+            last_name="",
             is_active=True,
             is_staff=True,
-            is_superuser=True
+            is_superuser=True,
         )
-        user.set_password('12345')
+        user.set_password("12345")
         user.save()

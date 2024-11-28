@@ -8,6 +8,7 @@ class BlogCreateForm(StyleFormMixin, ModelForm):
     """
     Форма для создания блога.
     """
+
     class Meta:
         model = Blog
-        exclude = ('views_count',)
+        exclude = ("views_count",)

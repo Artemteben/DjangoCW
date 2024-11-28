@@ -17,19 +17,21 @@ class UserLoginView(LoginView):
     """
     Класс отображения страницы входа в аккаунт.
     """
+
     form_class = forms.LoginUserForm
-    template_name = 'users/login.html'
-    extra_context = {'title': 'Авторизация'}
+    template_name = "users/login.html"
+    extra_context = {"title": "Авторизация"}
 
 
 class UserRegisterView(CreateView):
     """
     Класс отображения страницы регистрации пользователя.
     """
+
     form_class = forms.UserRegisterForm
-    template_name = 'users/register.html'
-    success_url = reverse_lazy('users:show_certificate')
-    extra_context = {'title': 'Регистрация'}
+    template_name = "users/register.html"
+    success_url = reverse_lazy("users:show_certificate")
+    extra_context = {"title": "Регистрация"}
 
     def form_valid(self, form):
         """
@@ -42,12 +44,12 @@ class UserRegisterView(CreateView):
         user.token = token
         user.save()
         host = self.request.get_host()
-        url = f'http://{host}/users/email-confirm/{token}'
+        url = f"http://{host}/users/email-confirm/{token}"
         send_mail(
-            subject='Подтверждение почты',
-            message=f'Перейдите по ссылке для подтверждения электронной почты {url}',
+            subject="Подтверждение почты",
+            message=f"Перейдите по ссылке для подтверждения электронной почты {url}",
             from_email=EMAIL_HOST_USER,
-            recipient_list=[user.email]
+            recipient_list=[user.email],
         )
         return super().form_valid(form)
 
@@ -59,7 +61,7 @@ def email_verifications(request, token):
     user = get_object_or_404(User, token=token)
     user.is_active = True
     user.save()
-    return redirect(reverse_lazy('users:login'))
+    return redirect(reverse_lazy("users:login"))
 
 
 def show_certificate(request):
@@ -67,17 +69,18 @@ def show_certificate(request):
     Функция для отображения справочной информации
     для входа в аккаунт.
     """
-    return render(request, 'users/show_certificate.html')
+    return render(request, "users/show_certificate.html")
 
 
 class UserProfile(LoginRequiredMixin, UpdateView):
     """
     Класс отображения страницы профиля пользователя.
     """
+
     form_class = forms.UserProfileForm
-    template_name = 'users/profile.html'
-    success_url = reverse_lazy('users:profile')
-    extra_context = {'title': 'Профиль'}
+    template_name = "users/profile.html"
+    success_url = reverse_lazy("users:profile")
+    extra_context = {"title": "Профиль"}
 
     def get_object(self, queryset=None):
         """
@@ -91,19 +94,21 @@ class UserPasswordChangeView(PasswordChangeView):
     """
     Класс отображения страницы изменения пароля.
     """
+
     form_class = forms.UserPasswordChangeForm
-    template_name = 'users/password_change_form.html'
-    success_url = reverse_lazy('users:password_change_done')
-    extra_context = {'title': 'Восстановление пароля'}
+    template_name = "users/password_change_form.html"
+    success_url = reverse_lazy("users:password_change_done")
+    extra_context = {"title": "Восстановление пароля"}
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     """
     Класс отображения страницы для редактирования профиля.
     """
+
     model = User
-    success_url = reverse_lazy('users:list')
-    extra_context = {'title': 'Профиль'}
+    success_url = reverse_lazy("users:list")
+    extra_context = {"title": "Профиль"}
 
     def get_form_class(self):
         """
@@ -114,7 +119,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         user = self.request.user
         if self.object.email == user.email:
             return forms.UserProfileForm
-        if user.has_perm('users.can_change_user'):
+        if user.has_perm("users.can_change_user"):
             return forms.UserModerProfileForm
 
 
@@ -122,14 +127,16 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
     """
     Класс отображения страницы удаления профиля пользователя.
     """
+
     model = User
-    success_url = reverse_lazy('users:list')
-    extra_context = {'title': 'Удаление профиля'}
+    success_url = reverse_lazy("users:list")
+    extra_context = {"title": "Удаление профиля"}
 
 
 class UserListView(LoginRequiredMixin, ListView):
     """
     Класс отображения страницы списка пользователей.
     """
+
     model = User
-    extra_context = {'title': 'Список пользователей'}
+    extra_context = {"title": "Список пользователей"}

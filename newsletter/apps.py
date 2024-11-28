@@ -17,7 +17,7 @@ class NewsletterConfig(AppConfig):
         """
         logger.debug("NewsletterConfig.ready() начался")
 
-        def start_scheduler():
+        def start_scheduler_():
             try:
                 from newsletter.management.commands.start_scheduler import Command
 
@@ -31,12 +31,10 @@ class NewsletterConfig(AppConfig):
 
         def run_scheduler_with_delay():
             sleep(2)  # Задержка для предотвращения конфликта с миграциями
-            start_scheduler()
+            start_scheduler_()
 
         # Подключаем сигнал post_migrate для запуска планировщика после завершения миграций
-        post_migrate.connect(
-            lambda sender, **kwargs: threading.Thread(
-                target=run_scheduler_with_delay, daemon=True
-            ).start(),
-            sender=self,
-        )
+        logger.error(f"Ошибка при запуске планировщика: ")
+        run_scheduler_with_delay()
+        logger.error(f"Ошибка при запуске")
+
