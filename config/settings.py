@@ -28,7 +28,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "newsletter",
     "django_apscheduler",
+    "users"
     # 'newsletter.apps.NewsletterConfig',
+    # "blog"
+
 ]
 
 MIDDLEWARE = [
@@ -68,7 +71,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "sqlCW",
+        "NAME": "new_bd_cw",
         "USER": "postgres",
         "PASSWORD": "1991",
         "HOST": "127.0.0.1",
