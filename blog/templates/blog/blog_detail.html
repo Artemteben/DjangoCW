@@ -1,0 +1,39 @@
+{% extends 'newsletter/base.html' %}
+{% load blog_media_tags %}
+{% block content %}
+<div class="container">
+    <div class="row text-center mt-5">
+        <div class="col-12 mt-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4">
+                            <img src="{{ object.image|media_filter }}" class="img-fluid" alt="...">
+                        </div>
+                        <div class="col-8 text-start">
+                            <h4 class="card-title">Заголовок: {{object.title}}</h4>
+                            <p>Текст: {{object.text}}</p>
+                            <div class="row">
+                                <div class="col">
+                                    <p>Создано: {{object.date}}<br>
+                                        Изменено {{object.date_update}}<br>
+                                        Просмотры {{object.views_count}}</p>
+                                </div>
+                                <div class="col text-end">
+                                    {% if perms.blog.can_change_blog and perms.blog.can_delete_blog %}
+                                    <a href="{% url 'blog:update' object.pk %}"
+                                       class="btn btn-outline-warning">Редактировать</a>
+                                    <a href="{% url 'blog:delete' object.pk %}"
+                                       class="btn btn-outline-danger">Удалить</a>
+                                    {% endif %}
+                                    <a href="{% url 'blog:list' %}"
+                                       class="btn btn-outline-primary">Назад</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

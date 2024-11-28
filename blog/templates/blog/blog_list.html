@@ -1,0 +1,40 @@
+{% extends 'newsletter/base.html' %}
+{% load blog_media_tags %}
+{% block content %}
+<div class="container">
+    <div class="row text-center mt-5">
+        {% if perms.blog.can_add_blog %}
+        <div>
+            <a href="{% url 'blog:create' %}" class="btn btn-outline-secondary">Создать статью</a>
+        </div>
+        {% endif %}
+        {% for object in object_list %}
+        <div class="col-12 mt-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4">
+                            <img src="{{ object.image|media_filter }}" class="img-fluid" alt="...">
+                        </div>
+                        <div class="col-8 text-start">
+                            <h4 class="card-title">{{ object.title }}</h4>
+                            <p>{{ object.text|slice:100 }}</p>
+                            <div class="row">
+                                <div class="col-12 text-end">
+                                    <a href="{% url 'blog:detail' object.pk %}" class="btn btn-outline-primary">Посмотреть</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="row mt-5">
+            <div class="col-3 mx-auto">
+                <a class="btn btn-outline-primary" href="{% url 'newsletter:mailing_attempt_list' %}" role="button">Назад</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
