@@ -28,9 +28,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "newsletter",
     "django_apscheduler",
-    "users"
-    # 'newsletter.apps.NewsletterConfig',
-    # "blog"
+    "users",
+    "blog",
 
 ]
 
@@ -64,14 +63,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
+AUTH_USER_MODEL = 'users.User'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "new_bd_cw",
+        "NAME": "CW_6_CW",
         "USER": "postgres",
         "PASSWORD": "1991",
         "HOST": "127.0.0.1",
@@ -110,7 +109,8 @@ TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 
 USE_TZ = True
-
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
