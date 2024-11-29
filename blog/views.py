@@ -11,6 +11,14 @@ from django.views.generic import (
 from blog.forms import BlogCreateForm
 from blog.models import Blog
 
+from django.shortcuts import render
+from .models import Blog
+from newsletter.models import Mailing, Client
+
+
+
+
+
 
 class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """

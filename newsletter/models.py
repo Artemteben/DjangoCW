@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from users.models import User
+
 NULLABLE = {"blank": True, "null": True}
 
 
@@ -9,6 +11,13 @@ class Client(models.Model):
     fullname = models.CharField(max_length=250, verbose_name="ФИО")
     phone_number = models.CharField(max_length=15, unique=True, **NULLABLE)
     comment = models.TextField(verbose_name="Комментарий", **NULLABLE)
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+        help_text='Укажите пользователя',
+        **NULLABLE
+    )
 
     class Meta:
         verbose_name = "Клиент"
@@ -56,6 +65,13 @@ class Mailing(models.Model):
         default=Status.CREATED,
         verbose_name="Статус выполнения",
     )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+        help_text='Укажите пользователя',
+        **NULLABLE
+    )
 
     class Meta:
         verbose_name = "Рассылка"
@@ -68,6 +84,13 @@ class Mailing(models.Model):
 class Message(models.Model):
     subject = models.CharField(max_length=255, verbose_name="Тема сообщения")
     content = models.TextField(verbose_name="Содержание сообщения")
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Автор',
+        help_text='Укажите автора',
+        **NULLABLE
+    )
 
     class Meta:
         verbose_name = "Сообщение"

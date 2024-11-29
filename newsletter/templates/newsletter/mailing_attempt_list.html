@@ -1,70 +1,112 @@
 {% extends 'newsletter/base.html' %}
 
 {% block content %}
-  <style>
+<style>
     .table-container {
-      max-width: 80%; /* Максимальная ширина контейнера таблицы - 80% экрана */
-      margin: 0 auto; /* Центрирование контейнера по горизонтали */
-      padding: 20px; /* Отступы вокруг таблицы */
+        max-width: 80%; /* Максимальная ширина контейнера таблицы - 80% экрана */
+        margin: 0 auto; /* Центрирование контейнера по горизонтали */
+        padding: 20px; /* Отступы вокруг таблицы */
     }
 
     table {
-      width: 100%; /* Таблица занимает всю ширину контейнера */
+        width: 100%; /* Таблица занимает всю ширину контейнера */
     }
 
     .header-content {
-      margin-left: 20px; /* Добавляет отступ слева */
-      margin-bottom: 20px; /* Отступ внизу перед таблицей */
+        margin-left: 20px; /* Добавляет отступ слева */
+        margin-bottom: 20px; /* Отступ внизу перед таблицей */
     }
-  </style>
 
-  <div class="header-content">
+    .random-blogs {
+        margin-top: 30px;
+    }
+
+    .random-blogs h2 {
+        margin-bottom: 20px;
+    }
+
+    .random-blogs ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .random-blogs li {
+        margin-bottom: 15px;
+    }
+
+    .random-blogs img {
+        max-width: 200px;
+        height: auto;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="header-content">
     <h2>Список попыток рассылок</h2>
 
     <div class="mb-3">
-      <p>Общее количество рассылок: <strong>{{ total_mailings }}</strong></p>
-      <p>Количество активных рассылок: <strong>{{ active_mailings }}</strong></p>
+        <p>Общее количество рассылок: <strong>{{ total_mailings }}</strong></p>
+        <p>Количество активных рассылок: <strong>{{ active_mailings }}</strong></p>
+        <p>Уникальных клиентов: <strong>{{ unique_clients }}</strong></p>
     </div>
-  </div>
 
-  <div class="table-container">
+    <div class="random-blogs">
+        <h2>Случайные статьи из блога</h2>
+        <ul>
+            {% for blog in random_blogs %}
+            <li>
+                <h3>{{ blog.title }}</h3>
+                <p>{{ blog.content|truncatewords:20 }}</p>
+                {% if blog.image %}
+                    <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                {% endif %}
+            </li>
+            {% empty %}
+            <p>Нет случайных статей для отображения.</p>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="table-container">
     <table class="table table-bordered table-hover">
-      <thead class="thead-dark">
-        <tr>
-          <th>Рассылка</th>
-          <th>Дата и время попытки</th>
-          <th>Статус</th>
-          <th>Отклик сервера</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for mailing in object_list %}
-          {% for attempt_item in mailing.attempts.all %}
+        <thead class="thead-dark">
             <tr>
-              <td>{{ mailing }}</td>
-              <td>{{ attempt_item.datetime_attempt|date:"d.m.Y H:i" }}</td>
-              <td>{% if attempt_item.status == "success" %}
-                  <span class="text-success">{{ attempt_item.get_status_display }}</span>
-                 {% else %}
-                  <span class="text-danger">{{ attempt_item.get_status_display }}</span>
-
-                {% endif %}
-              </td>
-              <td>
-                {% if attempt_item.server_response %}
-                  {{ attempt_item.server_response }}
-                {% else %}
-                  Нет ответа от сервера
-                {% endif %}
-              </td>
+                <th>Рассылка</th>
+                <th>Дата и время попытки</th>
+                <th>Статус</th>
+                <th>Отклик сервера</th>
             </tr>
-          {% empty %}
+        </thead>
+        <tbody>
+            {% for mailing in object_list %}
+            {% for attempt_item in mailing.attempts.all %}
             <tr>
-              <td colspan="4" class="text-center">Нет попыток рассылки.</td>
+                <td>{{ mailing }}</td>
+                <td>{{ attempt_item.datetime_attempt|date:"d.m.Y H:i" }}</td>
+                <td>
+                    {% if attempt_item.status == "success" %}
+                    <span class="text-success">{{ attempt_item.get_status_display }}</span>
+                    {% else %}
+                    <span class="text-danger">{{ attempt_item.get_status_display }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if attempt_item.server_response %}
+                    {{ attempt_item.server_response }}
+                    {% else %}
+                    Нет ответа от сервера
+                    {% endif %}
+                </td>
             </tr>
-          {% endfor %}
-        {% endfor %}
-      </tbody>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">Нет попыток рассылки.</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
     </table>
-  </div>
+</div>
+
 {% endblock %}

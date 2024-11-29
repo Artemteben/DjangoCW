@@ -1,17 +1,17 @@
 from django.db import models
 
 from newsletter.models import NULLABLE
+from users.models import User
 
 
 class Blog(models.Model):
     """
     Модель блога.
     """
-
     title = models.CharField(
         max_length=100, verbose_name="Заголовок", help_text="Напишите заголовок"
     )
-    text = models.TextField(
+    content = models.TextField(
         verbose_name="Текст статьи", help_text="Напишите текст статьи", **NULLABLE
     )
     image = models.ImageField(
@@ -20,13 +20,21 @@ class Blog(models.Model):
         help_text="Загрузите изображение",
         **NULLABLE
     )
-    views_count = models.PositiveIntegerField(
+    views = models.PositiveIntegerField(
         default=0,
         verbose_name="Количество просмотров",
         help_text="Укажите количество просмотров",
     )
-    date = models.DateField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
     date_update = models.DateField(auto_now=True)
+    published = models.BooleanField(default=False)  # Статус публикации
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+        help_text='Укажите пользователя',
+        **NULLABLE
+    )
 
     def __str__(self):
         return self.title

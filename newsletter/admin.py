@@ -1,15 +1,14 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group, Permission
+from .models import Mailing
 
 from newsletter.models import Client, Mailing, Message, MailingAttempt
-
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
     list_display = ("email", "fullname", "phone_number", "comment")
     search_fields = ("email", "fullname", "phone_number")
-
     list_filter = ("email", "fullname", "phone_number")
-
 
 @admin.register(Mailing)
 class MailingAdmin(admin.ModelAdmin):
@@ -17,6 +16,15 @@ class MailingAdmin(admin.ModelAdmin):
     search_fields = ("message",)
     list_filter = ("frequency", "status", "datetime_first_mailing")
 
+# Удалить эту строку, чтобы избежать дублирования:
+# admin.site.register(Mailing, MailingAdmin)
+
+# Создание группы и назначение разрешений
+manager_group, created = Group.objects.get_or_create(name='Manager')
+manager_group.permissions.add(
+    Permission.objects.get(codename='can_view_user'),
+    Permission.objects.get(codename='can_change_user')
+)
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
@@ -25,7 +33,6 @@ class MessageAdmin(admin.ModelAdmin):
         "content",
     )
     search_fields = ("subject",)
-
 
 @admin.register(MailingAttempt)
 class MailingAttemptAdmin(admin.ModelAdmin):

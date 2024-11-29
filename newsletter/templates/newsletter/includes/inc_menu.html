@@ -14,8 +14,6 @@
                     <a class="btn btn-outline-secondary" href="{% url 'newsletter:mailing_attempt_list' %}"
                        role="button">Главная страниц</a><br>
                     {% if user.is_authenticated %}
-                    <a class="btn btn-outline-secondary" href="{% url 'newsletter:mailing_list' %}" role="button">Посмотреть
-                        рассылки</a><br>
                     <a class="btn btn-outline-secondary" href="{% url 'blog:list' %}" role="button">Блог</a><br>
                     <a class="btn btn-outline-secondary" href="{% url 'users:profile' %}" role="button">Профиль</a><br>
                     <form method="post" action="{% url 'users:logout' %}">
