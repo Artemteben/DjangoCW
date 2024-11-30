@@ -1,5 +1,5 @@
 from django.forms import BooleanField, ModelForm
-
+from django import forms
 from newsletter.models import Client, Message, Mailing
 
 
@@ -37,21 +37,17 @@ class ClientForm(StyleFormMixin, ModelForm):
         exclude = ("author",)
 
 
-class CreateMailingForm(StyleFormMixin, ModelForm):
-    """
-    Модель формы создания рассылок.
-    """
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user")
-        super().__init__(*args, **kwargs)
-        self.fields["clients"].queryset = Client.objects.filter(author=user)
-        self.fields["message"].queryset = Message.objects.filter(author=user)
-
+class CreateMailingForm(forms.ModelForm):
     class Meta:
         model = Mailing
-        exclude = ("author", "status", "date_time")
+        fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Извлекаем пользователя
+        super().__init__(*args, **kwargs)
+        if user:
+            # Фильтруем клиентов, принадлежащих текущему пользователю
+            self.fields['clients'].queryset = Client.objects.filter(author=user)
 
 class UpdateMailingForm(StyleFormMixin, ModelForm):
     """

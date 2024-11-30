@@ -18,7 +18,7 @@
                         </div>
                         <div class="col-8 text-start">
                             <h4 class="card-title">{{ object.title }}</h4>
-                            <p>{{ object.text|slice:100 }}</p>
+                                    <p>{{ object.content|slice:100 }}</p>
                             <div class="row">
                                 <div class="col-12 text-end">
                                     <a href="{% url 'blog:detail' object.pk %}" class="btn btn-outline-primary">Посмотреть</a>

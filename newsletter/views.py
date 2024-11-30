@@ -66,6 +66,11 @@ class ClientCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 class MailingListView(LoginRequiredMixin, ListView):
     model = Mailing
     template_name = "newsletter/mailing_list.html"
+    context_object_name = "mailings"
+
+    def get_queryset(self):
+        # Возвращаем только рассылки текущего пользователя
+        return Mailing.objects.filter(author=self.request.user)
 
 
 
@@ -81,18 +86,32 @@ class MailingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
     template_name = "newsletter/mailing_form.html"
     permission_required = 'newsletter.change_mailing'  # Требуем разрешение на изменение рассылки
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
     def get_success_url(self):
         return reverse("newsletter:mailing_detail", args=[self.object.pk])
 
 
+
 # Создание рассылки
-class MailingCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class MailingCreateView(LoginRequiredMixin, CreateView):
     model = Mailing
-    form_class = CreateMailingForm  # Использование формы
+    form_class = CreateMailingForm
     template_name = "newsletter/mailing_form.html"
     success_url = reverse_lazy("newsletter:mailing_list")
-    permission_required = 'newsletter.add_mailing'  # Требуем разрешение на создание рассылки
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # Передаем текущего пользователя в форму
+        return kwargs
+
+    def form_valid(self, form):
+        # Устанавливаем текущего пользователя как автора рассылки
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 # Удаление рассылки
 class MailingDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):

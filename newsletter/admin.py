@@ -16,9 +16,6 @@ class MailingAdmin(admin.ModelAdmin):
     search_fields = ("message",)
     list_filter = ("frequency", "status", "datetime_first_mailing")
 
-# Удалить эту строку, чтобы избежать дублирования:
-# admin.site.register(Mailing, MailingAdmin)
-
 # Создание группы и назначение разрешений
 manager_group, created = Group.objects.get_or_create(name='Manager')
 manager_group.permissions.add(

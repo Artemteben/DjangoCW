@@ -16,6 +16,7 @@ sqlalchemy = "^2.0.36"
 pillow = "^11.0.0"
 psycopg2 = "^2.9.10"
 django = "5.0.7"
+python-decouple = "^3.8"
 
 
 [build-system]
