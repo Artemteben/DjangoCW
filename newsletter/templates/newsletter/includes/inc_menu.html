@@ -6,13 +6,13 @@
                 <div class="col-sm-8 col-md-7 py-4">
                     <h4>О нас</h4>
                     <p>
-                        Наше приложение может отправлять рассылки нашим клиентам
+                        Шлем рассылки нашим клиентам
                     </p>
                 </div>
                 <div class="col-sm-4 offset-md-1 py-4">
                     <h4>Меню</h4>
                     <a class="btn btn-outline-secondary" href="{% url 'newsletter:mailing_attempt_list' %}"
-                       role="button">Главная страниц</a><br>
+                       role="button">Главная страница</a><br>
                     {% if user.is_authenticated %}
                     <a class="btn btn-outline-secondary" href="{% url 'blog:list' %}" role="button">Блог</a><br>
                     <a class="btn btn-outline-secondary" href="{% url 'users:profile' %}" role="button">Профиль</a><br>
