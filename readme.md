@@ -1,11 +1,11 @@
-## Gjango рассылки"
+## Django рассылки"
 
 Знакомство с базовыми возможностями Django
 
 ## Установка
 
 1. **Клонируйте репозиторий:**
-     https://github.com/AlexanderMalach/coursework-6.git
+     git@github.com:Artemteben/DjangoCW.git
 
 2. **Создайте виртуальное окружение и активируйте его:**
     ```sh
@@ -26,6 +26,6 @@
 ```
 ## Автор
 
-[Aртем Тебен](https://github.com/AlexanderMalach)
+[Aртем Тебен] ([https://github.com/Artemteben])
 
 
