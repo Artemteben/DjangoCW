@@ -1,4 +1,4 @@
-## курсовой проект"
+## Gjango рассылки"
 
 Знакомство с базовыми возможностями Django
 
@@ -26,6 +26,6 @@
 ```
 ## Автор
 
-[Aлександр Малахинский](https://github.com/AlexanderMalach)
+[Aртем Тебен](https://github.com/AlexanderMalach)
 
 
