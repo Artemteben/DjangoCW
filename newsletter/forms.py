@@ -4,9 +4,6 @@ from newsletter.models import Client, Message, Mailing
 
 
 class StyleFormMixin:
-    """
-    Базовый класс миксин для всех форм.
-    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,9 +15,6 @@ class StyleFormMixin:
 
 
 class MessageForm(StyleFormMixin, ModelForm):
-    """
-    Модель формы для сообщений.
-    """
 
     class Meta:
         model = Message
@@ -28,9 +22,6 @@ class MessageForm(StyleFormMixin, ModelForm):
 
 
 class ClientForm(StyleFormMixin, ModelForm):
-    """
-    Модель формы для клиентов.
-    """
 
     class Meta:
         model = Client
@@ -50,9 +41,6 @@ class CreateMailingForm(forms.ModelForm):
             self.fields['clients'].queryset = Client.objects.filter(author=user)
 
 class UpdateMailingForm(StyleFormMixin, ModelForm):
-    """
-    Модель формы редактирования рассылок.
-    """
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user")
@@ -66,9 +54,6 @@ class UpdateMailingForm(StyleFormMixin, ModelForm):
 
 
 class UpdateModerMailingForm(StyleFormMixin, ModelForm):
-    """
-    Модель формы для редактирования модератором.
-    """
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user")

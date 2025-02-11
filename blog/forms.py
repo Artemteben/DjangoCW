@@ -5,9 +5,7 @@ from newsletter.forms import StyleFormMixin
 
 
 class BlogCreateForm(StyleFormMixin, ModelForm):
-    """
-    Форма для создания блога.
-    """
+
 
     class Meta:
         model = Blog

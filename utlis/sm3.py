@@ -103,7 +103,6 @@ class SendMail:
             )
             return CronTrigger(minute=1)
 
-    # datetime_first_mailing__lte = current_datetime
 
     def finished_status(self):
         mailings = self.get_mailings()
@@ -136,14 +135,7 @@ class Command(BaseCommand):
                 )
                 logger.info(f"Добавлена задача для рассылки {mailing.id}.")
 
-        # scheduler.add_job(
-        #     delete_old_job_executions,
-        #     trigger=CronTrigger(day_of_week="mon", hour="00", minute="00"),
-        #     id="delete_old_job_executions",
-        #     max_instances=1,
-        #     replace_existing=True,
-        # )
-        # logger.info("Добавлена задача 'delete_old_job_executions'.")
+
 
         try:
             logger.info("Запуск планировщика...")

@@ -5,9 +5,7 @@ from users.models import User
 
 
 class Blog(models.Model):
-    """
-    Модель блога.
-    """
+
     title = models.CharField(
         max_length=100, verbose_name="Заголовок", help_text="Напишите заголовок"
     )

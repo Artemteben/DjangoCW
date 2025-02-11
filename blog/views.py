@@ -16,14 +16,7 @@ from .models import Blog
 from newsletter.models import Mailing, Client
 
 
-
-
-
-
 class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    """
-    Модель создания статьи блога.
-    """
 
     model = Blog
     form_class = BlogCreateForm
@@ -33,9 +26,6 @@ class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
 
 class BlogUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    """
-    Модель редактирования статьи блога.
-    """
 
     model = Blog
     form_class = BlogCreateForm
@@ -45,9 +35,6 @@ class BlogUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
 
 class BlogDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
-    """
-    Модель детального просмотра статьи блога.
-    """
 
     model = Blog
     permission_required = "blog.can_view_blog"
@@ -55,9 +42,7 @@ class BlogDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
 
 
 class BlogDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    """
-    Модуль удаления статьи блога.
-    """
+
 
     model = Blog
     success_url = reverse_lazy("blog:list")
@@ -66,9 +51,6 @@ class BlogDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
 
 
 class BlogListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    """
-    Модель вывода всех статей блога.
-    """
 
     model = Blog
     permission_required = "blog.can_view_blog"
